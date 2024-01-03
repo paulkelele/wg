@@ -57,29 +57,29 @@ public class genericConfiguration {
 */
     @Bean
     @ServiceActivator(inputChannel = "directMessageChannel")
-    public MessageHandler sendFtp(){
-        DefaultFtpSessionFactory sf = new DefaultFtpSessionFactory();
-        sf.setHost("172.19.123.127");
+    public  MessageHandler sendFtp(){
+        DefaultFtpSessionFactory sf = new DefaultFtpSessionFactory ();
+        sf.setHost("172.19.202.134");
         sf.setPort(21);
         sf.setUsername("stef");
         sf.setPassword("cerise");
-        CachingSessionFactory<FTPFile> t = new CachingSessionFactory<>(sf);
+         CachingSessionFactory<FTPFile> t = new CachingSessionFactory<>(sf);
         FtpMessageHandler ftpMessageHandler = new FtpMessageHandler(t);
         // setRemoteDirectoryExpressionString permet de créer le repertoire ou uploader les fichiers
         // sur le serveur ftp (vsftpd sou Ubuntu). Ici ça sera /srv/ftp
-        ftpMessageHandler.setRemoteDirectoryExpressionString("headers['/srv/ftp']");
+        ftpMessageHandler.setRemoteDirectoryExpressionString("headers['/srv/ftp/']");
         ftpMessageHandler.setFileNameGenerator(message ->
                     message.getHeaders().get(FileHeaders.FILENAME, String.class)
         );
-        ftpMessageHandler.setAutoCreateDirectory(true);
+       // ftpMessageHandler.setAutoCreateDirectory(true);
         return ftpMessageHandler;
     }
 
-    @Bean
+   /* @Bean
     @ServiceActivator(inputChannel = "directMessageChannel")
     public SmbMessageHandler sendSMB(){
         SmbSessionFactory  smbSession = new SmbSessionFactory();
-        smbSession.setHost("172.19.123.127");
+        smbSession.setHost("172.19.202.134");
         smbSession.setPort(445);
         smbSession.setDomain("WORKGROUP");
         smbSession.setUsername("stef");
@@ -97,5 +97,5 @@ public class genericConfiguration {
                     message.getHeaders().get(FileHeaders.FILENAME, String.class)
         );
         return smbMessageHandler;
-    }
+    }*/
 }
