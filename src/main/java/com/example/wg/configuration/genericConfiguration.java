@@ -11,6 +11,7 @@ import org.springframework.integration.annotation.InboundChannelAdapter;
 import org.springframework.integration.annotation.Poller;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
+import org.springframework.integration.channel.PublishSubscribeChannel;
 import org.springframework.integration.file.FileHeaders;
 import org.springframework.integration.file.FileNameGenerator;
 import org.springframework.integration.file.FileReadingMessageSource;
@@ -33,7 +34,7 @@ public class genericConfiguration {
 
     @Bean
     public MessageChannel directMessageChannel(){
-        return new DirectChannel();
+        return new PublishSubscribeChannel();
     }
 
     @Bean
@@ -47,14 +48,17 @@ public class genericConfiguration {
         return fileReadingMessageSource;
     }
 
-   /* @Bean
+   @Bean
     @ServiceActivator(inputChannel = "directMessageChannel")
     public FileWritingMessageHandler polling2(){
         FileWritingMessageHandler fileWritingMessageHandler = new FileWritingMessageHandler(new File("C:\\X"));
         fileWritingMessageHandler.setAutoCreateDirectory(true);
+        // Par défaut FileWriterMessageHandler est de type request/reply.
+        // Le repertoire étant final, il faut arrêter la propagation du message avec setExpectReply(false).
+        fileWritingMessageHandler.setExpectReply(false);
         return fileWritingMessageHandler;
     }
-*/
+
     @Bean
     @ServiceActivator(inputChannel = "directMessageChannel")
     public  MessageHandler sendFtp(){
@@ -75,7 +79,7 @@ public class genericConfiguration {
         return ftpMessageHandler;
     }
 
-   /* @Bean
+    @Bean
     @ServiceActivator(inputChannel = "directMessageChannel")
     public SmbMessageHandler sendSMB(){
         SmbSessionFactory  smbSession = new SmbSessionFactory();
@@ -97,5 +101,5 @@ public class genericConfiguration {
                     message.getHeaders().get(FileHeaders.FILENAME, String.class)
         );
         return smbMessageHandler;
-    }*/
+    }
 }
